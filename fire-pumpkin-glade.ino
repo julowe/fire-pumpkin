@@ -1,74 +1,71 @@
 /*
- FireLantern v1
+ * PIR sensor tester
+ */
+ 
+int ledPin = 13;                // choose the pin for the LED
+int buttonPin = 7;
+int signalPIRpin = 5;
+int inputPin = 2;               // choose the input pin (for PIR sensor)
+int pirState = LOW;             // we start, assuming no motion detected
+int val = 0;                    // variable for reading the pin status
 
- This sketch allows you to control the motor on a Glade freshmatic.
-
- By Rick Osgood
-
- : connect Glade VCC to Aduino 3.3V
- : connect Glade GND to Arduino GND
- : connect Glade "Manual" switch wire to Arduino pin 2 (motorpin)
- : connect PING sensor VCC to Arduino VCC
- : connect PING sensor GND to Arduino GND
- : connect PING sensor signal wire to Arduino pin 3 (pingpin)
-
-*/
-
-// https://www.youtube.com/watch?v=qDRTbuhs05Q
-//Downloaded from https://web.archive.org/web/20131106091413/http://www.richardosgood.com/blog/wp-content/uploads/2013/10/fireLantern_v1.ino
-
-// Pin Definitions
-#define motorpin 2
-#define pingpin 3
-
-// Constants
-const int TRIGGER_DISTANCE = 60; // How many inches from the PING sensor is the threshold?
-const int SAFETY_DISTANCE = 32;  // How many inches from the PING sensor is the "safety" threshold?
-const int WAIT_TIME = 30000; // How many seconds to wait after firing before we can fire again?
+// variables will change:
+int buttonState = 0;         // variable for reading the pushbutton status
 
 void setup() {
-  pinMode(motorpin, OUTPUT);
-  pinMode(pingpin, OUTPUT);
-
-  digitalWrite(motorpin, HIGH); // Make sure fire button starts unpressed (When button is pulled to ground it will fire)
-
+  pinMode(ledPin, OUTPUT);      // declare LED as output
+  pinMode(signalPIRpin, OUTPUT);      // declare signal PIR as output
+  pinMode(inputPin, INPUT);     // declare sensor as input
+  
+  // initialize the pushbutton pin as an input:
+  pinMode(buttonPin, INPUT);
+ 
   Serial.begin(9600);
 }
+ 
+void loop(){
+  // read the state of the pushbutton value:
+  buttonState = digitalRead(buttonPin);
 
-void loop() {
-  int distance = sensePing();	// Get the current distance
-  Serial.println(distance);		// Print it to serial for debugging
-  if ((distance < TRIGGER_DISTANCE) && (distance > SAFETY_DISTANCE)) {  // If the sensor detects something close but not too close
-    flameOn();  // Then press the fire button
-    delay(WAIT_TIME);  // Wait for WAIT_TIME milliseconds so the pumpkin doesn't fire over and over if something is not moving
+  // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
+  if (buttonState == HIGH) {
+    // turn LED on:
+    digitalWrite(ledPin, HIGH);
+    digitalWrite(signalPIRpin, HIGH);
+//    analogWrite(signalPIRpin, 100);
+
+  } else {
+    // turn LED off:
+    digitalWrite(ledPin, LOW);
+    digitalWrite(signalPIRpin, LOW);
+//    analogWrite(signalPIRpin, 0);
   }
-}
 
-void flameOn() {
-  digitalWrite(motorpin, LOW);  // "Press" the fire button
-  delay(200);
-  digitalWrite(motorpin, HIGH);  // Stop pressing the button
-}
-
-int sensePing() {
-  pinMode(pingpin, OUTPUT);
-  digitalWrite(pingpin, LOW);
-  delayMicroseconds(2);
-  digitalWrite(pingpin, HIGH);	//Send a pulse to the PING sensor
-  delayMicroseconds(5);
-  digitalWrite(pingpin, LOW);	//End pulse
-
-  pinMode(pingpin, INPUT);
-  return microsecondsToInches(pulseIn(pingpin, HIGH));	//Get the pulse, convert to inches and return the value
-}
-
-// This function from Arduino PING example sketch
-long microsecondsToInches(long microseconds)
-{
-  // According to Parallax's datasheet for the PING))), there are
-  // 73.746 microseconds per inch (i.e. sound travels at 1130 feet per
-  // second).  This gives the distance travelled by the ping, outbound
-  // and return, so we divide by 2 to get the distance of the obstacle.
-  // See: http://www.parallax.com/dl/docs/prod/acc/28015-PING-v1.3.pdf
-  return microseconds / 74 / 2;
+  //
+  //
+  
+  val = digitalRead(inputPin);  // read input value
+  if (val == HIGH) {            // check if the input is HIGH
+    digitalWrite(ledPin, HIGH);  // turn LED ON
+    digitalWrite(signalPIRpin, HIGH);
+    delay(500);
+    digitalWrite(ledPin, LOW); // turn LED OFF
+    digitalWrite(signalPIRpin, LOW);
+    if (pirState == LOW) {
+      // we have just turned on
+      Serial.println("Motion detected!");
+      // We only want to print on the output change, not state
+      pirState = HIGH;
+    }
+  }
+//  } else {
+//    digitalWrite(ledPin, LOW); // turn LED OFF
+//    digitalWrite(signalPIRpin, LOW);
+//    if (pirState == HIGH){
+//      // we have just turned of
+//      Serial.println("Motion ended!");
+//      // We only want to print on the output change, not state
+//      pirState = LOW;
+//    }
+//  }
 }
