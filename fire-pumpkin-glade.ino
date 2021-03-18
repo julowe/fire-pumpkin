@@ -28,8 +28,8 @@ SOFTWARE.
 
 int ledPin = 13;                // choose the pin for the LED
 int buttonPin = 7;
-int inputPin = 2;               // choose the input pin (for PIR sensor)
 int activateMotorPin = 5;
+int inputPIRPin = 2;               // choose the input pin (from PIR sensor)
 int pirState = LOW;             // we start, assuming no motion detected
 int val = 0;                    // variable for reading the pin status
 
@@ -38,15 +38,15 @@ int buttonState = 0;         // variable for reading the pushbutton status
 
 void setup() {
   pinMode(ledPin, OUTPUT);      // declare LED as output
-  pinMode(inputPin, INPUT);     // declare sensor as input
-  
   pinMode(activateMotorPin, OUTPUT);      // declare motor activation Pin as output
+  pinMode(inputPIRPin, INPUT);     // declare sensor signal as input
+
   // initialize the pushbutton pin as an input:
   pinMode(buttonPin, INPUT);
- 
+
   Serial.begin(9600);
 }
- 
+
 void loop(){
   // read the state of the pushbutton value:
   buttonState = digitalRead(buttonPin);
@@ -67,8 +67,8 @@ void loop(){
 
   //
   //
-  
-  val = digitalRead(inputPin);  // read input value
+
+  val = digitalRead(inputPIRPin);  // read input value
   if (val == HIGH) {            // check if the input is HIGH
     digitalWrite(ledPin, HIGH);  // turn LED ON
     digitalWrite(activateMotorPin, HIGH);
