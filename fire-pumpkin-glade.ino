@@ -28,8 +28,8 @@ SOFTWARE.
 
 int ledPin = 13;                // choose the pin for the LED
 int buttonPin = 7;
-int signalPIRpin = 5;
 int inputPin = 2;               // choose the input pin (for PIR sensor)
+int activateMotorPin = 5;
 int pirState = LOW;             // we start, assuming no motion detected
 int val = 0;                    // variable for reading the pin status
 
@@ -38,9 +38,9 @@ int buttonState = 0;         // variable for reading the pushbutton status
 
 void setup() {
   pinMode(ledPin, OUTPUT);      // declare LED as output
-  pinMode(signalPIRpin, OUTPUT);      // declare signal PIR as output
   pinMode(inputPin, INPUT);     // declare sensor as input
   
+  pinMode(activateMotorPin, OUTPUT);      // declare motor activation Pin as output
   // initialize the pushbutton pin as an input:
   pinMode(buttonPin, INPUT);
  
@@ -55,14 +55,14 @@ void loop(){
   if (buttonState == HIGH) {
     // turn LED on:
     digitalWrite(ledPin, HIGH);
-    digitalWrite(signalPIRpin, HIGH);
-//    analogWrite(signalPIRpin, 100);
+    digitalWrite(activateMotorPin, HIGH);
+//    analogWrite(activateMotorPin, 100);
 
   } else {
     // turn LED off:
     digitalWrite(ledPin, LOW);
-    digitalWrite(signalPIRpin, LOW);
-//    analogWrite(signalPIRpin, 0);
+    digitalWrite(activateMotorPin, LOW);
+//    analogWrite(activateMotorPin, 0);
   }
 
   //
@@ -71,10 +71,10 @@ void loop(){
   val = digitalRead(inputPin);  // read input value
   if (val == HIGH) {            // check if the input is HIGH
     digitalWrite(ledPin, HIGH);  // turn LED ON
-    digitalWrite(signalPIRpin, HIGH);
+    digitalWrite(activateMotorPin, HIGH);
     delay(500);
     digitalWrite(ledPin, LOW); // turn LED OFF
-    digitalWrite(signalPIRpin, LOW);
+    digitalWrite(activateMotorPin, LOW);
     if (pirState == LOW) {
       // we have just turned on
       Serial.println("Motion detected!");
@@ -84,7 +84,7 @@ void loop(){
   }
 //  } else {
 //    digitalWrite(ledPin, LOW); // turn LED OFF
-//    digitalWrite(signalPIRpin, LOW);
+//    digitalWrite(activateMotorPin, LOW);
 //    if (pirState == HIGH){
 //      // we have just turned of
 //      Serial.println("Motion ended!");
