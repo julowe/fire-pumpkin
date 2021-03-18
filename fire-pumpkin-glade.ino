@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-int ledPin = 13;                // choose the pin for the LED
+int ledPin = 13;                // declare the pin for the onboard LED
 int buttonPin = 7;
 int activateMotorPin = 5;
 int inputPIRPin = 2;               // choose the input pin (from PIR sensor)
@@ -86,7 +86,7 @@ void loop(){
 //    digitalWrite(ledPin, LOW); // turn LED OFF
 //    digitalWrite(activateMotorPin, LOW);
 //    if (pirState == HIGH){
-//      // we have just turned of
+//      // we have just turned off
 //      Serial.println("Motion ended!");
 //      // We only want to print on the output change, not state
 //      pirState = LOW;
