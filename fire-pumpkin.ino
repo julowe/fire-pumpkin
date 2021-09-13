@@ -1,5 +1,6 @@
 /*
- * Flame Breathing Pumpkin - Motion sensor or button press triggers digitalWrite to a pin
+ * Flame Breathing Pumpkin - Motion sensor or button press triggers servo to depress nozzle on can
+ * mostly cribbed from simple servo example from Adafruit Arduino, and probably their PIR example too, I forget at this point
  */
 
 /*
@@ -26,70 +27,101 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-int ledPin = 13;                // declare the pin for the onboard LED
-int buttonPin = 7;
-int activateMotorPin = 5;
+#include <Servo.h> 
+
+Servo servo;  
+const int servoPin = 3;
+const int angleMin = 20;
+const int angleMax = 60;
+const int sweepSmoothing = 15;
+const int timePIRdepressNozzle = 1 * 1000; //X seconds
+const int minTimeBetweenActuation = 5 * 1000; //X seconds
+int angle = angleMin;   // servo position in degrees
+
+//led indicator stuff
+const int ledPin = 13;                // declare the pin for the onboard LED
+
+//button tester stuff
+const int buttonPin = 5;
+int buttonPressed = 0;
+
+//PIR motion stuff
 int inputPIRPin = 2;               // choose the input pin (from PIR sensor)
-int pirState = LOW;             // we start, assuming no motion detected
-int val = 0;                    // variable for reading the pin status
+//int pirState = LOW;             // we start, assuming no motion detected
+int valPIR = 0;                    // variable for reading the pin status
 
-// variables will change:
-int buttonState = 0;         // variable for reading the pushbutton status
-
-void setup() {
+void setup() 
+{ 
   pinMode(ledPin, OUTPUT);      // declare LED as output
-  pinMode(activateMotorPin, OUTPUT);      // declare motor activation Pin as output
+  servo.attach(servoPin);
+  pinMode(buttonPin, INPUT); //declare button as input
+  servo.write(angleMin);
   pinMode(inputPIRPin, INPUT);     // declare sensor signal as input
-
-  // initialize the pushbutton pin as an input:
-  pinMode(buttonPin, INPUT);
-
-  Serial.begin(9600);
-}
-
-void loop(){
-  // read the state of the pushbutton value:
+  delay(minTimeBetweenActuation); // settle motion sensor
+} 
+ 
+ 
+void loop() 
+{ 
+  int buttonState;
   buttonState = digitalRead(buttonPin);
-
-  // check if the pushbutton is pressed. If it is, the buttonState is HIGH:
-  if (buttonState == HIGH) {
-    // turn LED on:
-    digitalWrite(ledPin, HIGH);
-    digitalWrite(activateMotorPin, HIGH);
-//    analogWrite(activateMotorPin, 100);
+  
+  if (buttonState == LOW) {
+    if (buttonPressed == 0) {
+      buttonPressed = 1;
+      nozzlePress();
+    }
+    //NB: No delay here so release happens exactly when you release button
 
   } else {
-    // turn LED off:
-    digitalWrite(ledPin, LOW);
-    digitalWrite(activateMotorPin, LOW);
-//    analogWrite(activateMotorPin, 0);
-  }
-
-  //
-  //
-
-  val = digitalRead(inputPIRPin);  // read input value
-  if (val == HIGH) {            // check if the input is HIGH
-    digitalWrite(ledPin, HIGH);  // turn LED ON
-    digitalWrite(activateMotorPin, HIGH);
-    delay(500);
-    digitalWrite(ledPin, LOW); // turn LED OFF
-    digitalWrite(activateMotorPin, LOW);
-    if (pirState == LOW) {
-      // we have just turned on
-      Serial.println("Motion detected!");
-      // We only want to print on the output change, not state
-      pirState = HIGH;
+    if (buttonPressed == 1) {
+      nozzleRelease();
+      buttonPressed = 0;
     }
+    
+    //delay(minTimeBetweenActuation); //still have a cooldown timeout, because safety?
   }
-//  } else {
-//    digitalWrite(ledPin, LOW); // turn LED OFF
-//    digitalWrite(activateMotorPin, LOW);
-//    if (pirState == HIGH){
-//      // we have just turned off
-//      Serial.println("Motion ended!");
+
+  valPIR = digitalRead(inputPIRPin);  // read input value
+  if (valPIR == HIGH) {            // check if the input is HIGH
+    //pres nozzle down with servo
+    nozzlePress();
+    
+    //wait set time before releasing
+    delay(timePIRdepressNozzle);
+    
+    //release nozzle with servo
+    nozzleRelease();
+    
+    delay(minTimeBetweenActuation); //cooldown timeout
+    
+//    if (pirState == LOW) {
+//      // we have just turned on
+//      Serial.println("Motion detected!");
 //      // We only want to print on the output change, not state
-//      pirState = LOW;
+//      pirState = HIGH;
 //    }
-//  }
+  }
+} 
+
+void nozzlePress() {
+  // turn onBoard LED on:
+  digitalWrite(ledPin, HIGH); 
+  // scan from angleMin to angleMax degrees
+  for(angle = angleMin; angle < angleMax; angle++)  
+  {                                  
+    servo.write(angle);               
+    delay(sweepSmoothing);                   
+  } 
+}
+
+void nozzleRelease() {
+  // now scan back from angleMax to angleMin degrees
+  for(angle = angleMax; angle > angleMin; angle--)    
+  {                                
+    servo.write(angle);           
+    delay(sweepSmoothing);       
+  } 
+  servo.write(angleMin); //redundant?
+  digitalWrite(ledPin, LOW); // turn LED OFF
 }
