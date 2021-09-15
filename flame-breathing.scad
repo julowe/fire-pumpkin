@@ -55,16 +55,8 @@ servoHorizontalSetback = 8; //measured rough placement, y direction movement
 servoHorizontalShift = 15; //x direction movement
 servoVerticalAdjustment = 5; //rough measurement of how far above top of can should the bottom of the servo housing be, in order to hit the nozzle well
 
-
-
-
-////backplane of holder
-//translate([(canTopOuterDiameter/2+platformCanTopHorizontalPadding)/2-(servoHorizontalShift+servoDepthBehindEars)/2,holderBackplaneDepth/2+(canTopOuterDiameter+platformCanTopHorizontalPadding*2)/2,platformCanTopHeight/2-(canHeight+platformCanBottomHeight)/2]){
-//    cube([(servoHorizontalShift+servoDepthBehindEars)+canTopOuterDiameter/2+platformCanTopHorizontalPadding,holderBackplaneDepth,platformCanTopHeight+canHeight+platformCanBottomHeight],true);
-//}
-
-
-
+difference(){
+    union(){
 //holds on to top of can around nozzle and inside lip of can
 difference(){
     //portion to go into/around lip of can
@@ -74,14 +66,73 @@ difference(){
     }
     
     //remove can area
-    makeCan();
-    
-//    //remove front half of rings
-//    translate([0,-(canTopOuterDiameter+platformCanTopHorizontalPadding*2)/2,-canTopLipInnerDepth+platformCanTopHeight/2]){
-//        cube([canTopOuterDiameter+platformCanTopHorizontalPadding*2,canTopOuterDiameter+platformCanTopHorizontalPadding*2,canTopLipInnerDepth*2+platformCanTopHeight],true);
-//    }
+    makeCan(); 
 }
 
+//backplane of holder
+translate([(canTopOuterDiameter/2+platformCanTopHorizontalPadding)/2-(servoHorizontalShift+servoDepthBehindEars)/2,holderBackplaneDepth/2+(canTopOuterDiameter+platformCanTopHorizontalPadding*2)/2,platformCanTopHeight/2-(canHeight+platformCanBottomHeight)/2]){
+    cube([(servoHorizontalShift+servoDepthBehindEars)+canTopOuterDiameter/2+platformCanTopHorizontalPadding,holderBackplaneDepth,platformCanTopHeight+canHeight+platformCanBottomHeight],true);
+}
+
+//bottom of holder
+translate([(canTopOuterDiameter/2+platformCanTopHorizontalPadding)/2-(servoHorizontalShift+servoDepthBehindEars)/2,0,-canHeight-platformCanBottomHeight/2]){
+    cube([(servoHorizontalShift+servoDepthBehindEars)+canTopOuterDiameter/2+platformCanTopHorizontalPadding,canTopOuterDiameter+platformCanTopHorizontalPadding*2,platformCanBottomHeight],true);
+}
+
+//servo holder
+translate([-servoHorizontalShift-(servoDepthBehindEars)/2,(servoWidth/2)+servoHorizontalSetback,(servoHeight)/2+platformCanTopHeight+servoVerticalAdjustment]){
+    difference(){
+        translate([0,0,(servoHolderVerticalPadding-servoVerticalAdjustment)/2]){
+        cube([servoDepthBehindEars,servoWidth+servoHolderHorizontalPadding*2,servoHeight+servoHolderVerticalPadding+servoVerticalAdjustment],true);
+        }
+        cube([servoDepthBehindEars,servoWidth,servoHeight],true);
+    }
+}
+}//end union of all
+
+//this cuts side of the model off so slightly fewer supports are needed
+modelCutoffWidth = 6;
+translate([canTopOuterDiameter/2+platformCanTopHorizontalPadding-modelCutoffWidth,-(canTopOuterDiameter+platformCanTopHorizontalPadding*2)/2,-(canHeight+platformCanBottomHeight)]){
+    cube([modelCutoffWidth,canTopOuterDiameter+platformCanTopHorizontalPadding*2+holderBackplaneDepth,platformCanTopHeight+canHeight+platformCanBottomHeight]);
+}
+}
+
+
+
+    
+    
+//makeCan();
+
+module makeCan() {
+    difference(){
+        union(){//can body
+            //main can body
+            translate([0,0,-canHeight]){
+                cylinder(canHeight-canTopLipOuterDepth,canBodyDiameter/2,canBodyDiameter/2);
+            }
+            
+            //upper part of can body
+            translate([0,0,-canTopLipOuterDepth]){
+                //ridge around edge of can
+                cylinder(canTopLipOuterDepth,canTopOuterDiameter/2,canTopOuterDiameter/2);   
+            }
+        }//end union can body 
+        
+        translate([0,0,-canTopLipInnerDepth]){
+            //inside wall of ring
+            cylinder(canTopLipInnerDepth,canTopInnerDiameter/2,canTopInnerDiameter/2);
+        }
+    }//end difference of inner lip from can body
+    
+    translate([0,0,-canTopLipInnerDepth]){
+        //interior stem
+        cylinder(canTopLipInnerDepth+platformCanTopHeight,nozzleDiameter/2,nozzleDiameter/2);
+    }
+} //end makeCan()
+//whitespace holder
+
+
+//code to save for now?
 ////just can top
 //difference(){
 //    //portion to go into/around lip of can
@@ -98,81 +149,3 @@ difference(){
 //        cube([canTopOuterDiameter+platformCanTopHorizontalPadding*2,canTopOuterDiameter+platformCanTopHorizontalPadding*2,canTopLipInnerDepth*2+platformCanTopHeight],true);
 //    }
 //}
-
-
-//to delete
-////backplane of holder
-//translate([0,holderBackplaneDepth/2+(canTopOuterDiameter+platformCanTopHorizontalPadding*2)/2,platformCanTopHeight/2-(canHeight+platformCanBottomHeight)/2]){
-//    cube([canTopOuterDiameter+platformCanTopHorizontalPadding*2,holderBackplaneDepth,platformCanTopHeight+canHeight+platformCanBottomHeight],true);
-//}
-//
-////bottom of holder
-//translate([0,0,-canHeight-platformCanBottomHeight/2]){
-//    cube([canTopOuterDiameter+platformCanTopHorizontalPadding*2,canTopOuterDiameter+platformCanTopHorizontalPadding*2,platformCanBottomHeight],true);
-//}
-
-//to^
-    
-
-//servo holder
-translate([-servoHorizontalShift-(servoDepthBehindEars)/2,(servoWidth/2)+servoHorizontalSetback,(servoHeight)/2+platformCanTopHeight+servoVerticalAdjustment]){
-    difference(){
-        translate([0,0,(servoHolderVerticalPadding-servoVerticalAdjustment)/2]){
-        cube([servoDepthBehindEars,servoWidth+servoHolderHorizontalPadding*2,servoHeight+servoHolderVerticalPadding+servoVerticalAdjustment],true);
-        }
-        cube([servoDepthBehindEars,servoWidth,servoHeight],true);
-    }
-}
-
-
-
-//backplane of holder
-translate([(canTopOuterDiameter/2+platformCanTopHorizontalPadding)/2-(servoHorizontalShift+servoDepthBehindEars)/2,holderBackplaneDepth/2+(canTopOuterDiameter+platformCanTopHorizontalPadding*2)/2,platformCanTopHeight/2-(canHeight+platformCanBottomHeight)/2]){
-    cube([(servoHorizontalShift+servoDepthBehindEars)+canTopOuterDiameter/2+platformCanTopHorizontalPadding,holderBackplaneDepth,platformCanTopHeight+canHeight+platformCanBottomHeight],true);
-}
-
-//bottom of holder
-translate([(canTopOuterDiameter/2+platformCanTopHorizontalPadding)/2-(servoHorizontalShift+servoDepthBehindEars)/2,0,-canHeight-platformCanBottomHeight/2]){
-    cube([(servoHorizontalShift+servoDepthBehindEars)+canTopOuterDiameter/2+platformCanTopHorizontalPadding,canTopOuterDiameter+platformCanTopHorizontalPadding*2,platformCanBottomHeight],true);
-}
-
-//servoAttachmentHeight = 4;
-////servo holder to backplane attachment
-//translate([-servoHorizontalShift-(servoDepthBehindEars)/2,(servoWidth/2)+servoHorizontalSetback,-canTopLipInnerDepth+platformCanTopHeight/2+servoAttachmentHeight/2]){
-//    cube([servoDepthBehindEars,canTopOuterDiameter/2+platformCanTopHorizontalPadding+holderBackplaneDepth,canTopLipInnerDepth*2+platformCanTopHeight+servoAttachmentHeight],true);
-//}
-
-//    //remove front half of rings
-//    translate([0,-(canTopOuterDiameter+platformCanTopHorizontalPadding*2)/2,-canTopLipInnerDepth+platformCanTopHeight/2]){
-//        cube([canTopOuterDiameter+platformCanTopHorizontalPadding*2,canTopOuterDiameter+platformCanTopHorizontalPadding*2,canTopLipInnerDepth*2+platformCanTopHeight],true);
-//    }
-    
-    
-//makeCan();
-
-module makeCan() {
-    difference(){
-        union(){
-            //main can body
-            translate([0,0,-canHeight]){
-                cylinder(canHeight-canTopLipOuterDepth,canBodyDiameter/2,canBodyDiameter/2);
-            }
-            
-            //upper part of can body
-            translate([0,0,-canTopLipOuterDepth]){
-                //ridge around edge of can
-                cylinder(canTopLipOuterDepth,canTopOuterDiameter/2,canTopOuterDiameter/2);   
-            }
-        }  
-        translate([0,0,-canTopLipInnerDepth]){
-            //inside wall of ring
-            cylinder(canTopLipInnerDepth,canTopInnerDiameter/2,canTopInnerDiameter/2);
-        }
-    }
-    translate([0,0,-canTopLipInnerDepth]){
-        //interior stem
-        cylinder(canTopLipInnerDepth,nozzleDiameter/2,nozzleDiameter/2);
-    }
-}
-//whitespace holder
-
