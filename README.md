@@ -4,6 +4,8 @@ Wherein we hook up a motion sensor to a servo which is mounted on a hairspray ca
 ## Upcoming Version - Servo Driven
 I have added the arduino code to drive a servo to depress a nozzle on a can, also a button to actuate the servo/press the nozzle on demand. I hope to soon add some STL files so we can 3d print a holder for a travel size hairspray can, a tealight, and a mount for the servo that depresses the nozzle. Maybe also some relatively water-resistant housings for the motion sensor and arduino with spikes to stab/mount into the pumpkin?
 
+I am using a [Micro Servo from Adafruit](https://www.adafruit.com/product/169) which works well so far in testing. Plenty of torque to depress nozzle on hairspray can.
+
 ## First Version - with Glade Dispenser
 The code was originally copied from [Richard Osgood's version from the WayBack Machine](https://web.archive.org/web/20131106091413/http://www.richardosgood.com/blog/wp-content/uploads/2013/10/fireLantern_v1.ino), but I actually ended up not using any as I had a motion sensor, not a distance sensor. Code checked in to maintain a copy of it and to acknowledge the inspiration. A [great Youtube video is available](https://www.youtube.com/watch?v=qDRTbuhs05Q) showing his build process.
 
