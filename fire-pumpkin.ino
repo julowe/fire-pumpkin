@@ -32,9 +32,9 @@ SOFTWARE.
 Servo servo;  
 const int servoPin = 3;
 const int angleMin = 20;
-const int angleMax = 60;
+const int angleMax = 70; //60 deg didn't quite actuate, 70 does quite well
 const int sweepSmoothing = 15;
-const int timePIRdepressNozzle = 1 * 1000; //X seconds
+const int timePIRdepressNozzle = 0.5 * 1000; //X seconds
 const int minTimeBetweenActuation = 5 * 1000; //X seconds
 int angle = angleMin;   // servo position in degrees
 int servoArmMoving = 0;
@@ -51,7 +51,7 @@ int buttonPressed = 0;
 int inputPIRPin = 2;               // choose the input pin (from PIR sensor)
 //int pirState = LOW;             // we start, assuming no motion detected
 int valPIR = 0;                    // variable for reading the pin status
-const int secsForPIRtoSettle = 15;
+const int secsForPIRtoSettle = 30;
 
 void setup() 
 { 
@@ -62,11 +62,11 @@ void setup()
   pinMode(inputPIRPin, INPUT);     // declare sensor signal as input
 
   //wait for PIR motion sensor to settle to off state and blink onboard LED so the user knows something is actually going on
-  for(int counterSeconds = 0; counterSeconds < secsForPIRtoSettle; counterSeconds++) {
+  for(int counterHalfSeconds = 0; counterHalfSeconds < secsForPIRtoSettle*2; counterHalfSeconds++) {
     digitalWrite(ledPin, HIGH); // turn onBoard LED on
-    delay(500);  //delay 0.5 seconds
+    delay(250);  //delay 0.25 seconds
     digitalWrite(ledPin, LOW); // turn onBoard LED on
-    delay(500);  //delay 0.5 seconds
+    delay(250);  //delay 0.25 seconds
   } 
 //  delay(minTimeBetweenActuation); // settle motion sensor
 } 
