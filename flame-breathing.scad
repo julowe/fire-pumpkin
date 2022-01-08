@@ -3,39 +3,37 @@
 
 //generic holder for thing to make flame
 
-//sparker or tea light?
-//tea light for ease of other people's use as default, sparker as option later
-//next time, just move the cylinder over and don't center all the cubes...
-
 draftingFNs = 36;
 renderFNs = 180;
 $fn = draftingFNs;
 
-//TODO: 
-// X-test if we can just using a servo to depress head of hair spary can. Works!
-// X-wire channel - make full height (or most)
-// X-fix servo hole dimensions
-// -arduino mount
-// -holes in base for mounting... nails?
-
-//To Check with test print:
-// X-servo mounting hole locations - good so far, maybe more padding horizontally for serov holder tho
-// X-servo moutning hole dimensions
-// X-servo wires channel
-// !!!! -servo arm vs nozzle - touchign but also good force and activation time (change angle moved or vertical/horizontal position of servoholder/arm)
-// X-lip to hold can
-// -easy enough to insert can into holder without deforming/breaking backplane bottom top etc
+//Potential TODO: 
+// -arduino mount - back of mount? Likely better if arduino board is not connected to this, so we don't have to worry about balance or overall placement of this mount inside pupmkin
 
 /*Description of 3d model
 -xy plane will be the top of metal part of can. so nozzle on positive side. nozzle centered on z axis.
 -half ring with lip to hold can in place on top.
--servo cutout, find appropriate place relative to nozzle
+-servo cutout, at appropriate place relative to nozzle
 */
+/*Design Choices
+-This mount holds can and servo. Does not have tea light or sparker holder, mostly for time, partly to allow for more flexible placements
+-servo is well mounted with just one screw, at back edge away from nozzle
+-does not have arduino mount - would possibly unbalance it, also too many different form factors to consider
+-best placement of tea light was found to be roughly 1.5" below nozzle, and 3" away from nozzle. Still didn't work great :-/ But I guess I'd rather it fail to ignite, than fail to not ignite/stop...
+-print with the common plane of servo holder 'back' and 'side' of can holder flat on build plate (YZ Plane in openscad view) Some supports recommended for lip of can holder
+*/
+/* Bill Of Materials
+-Tresemme Hairspray can, 1.5oz travel size, bought at Target
+-servo, used Tower Pro SG92R Microservo - https://www.adafruit.com/product/169
+//the rest doesn't interact with this model/holder, but fyi:
+-arduino, only three IO pins used so almost any should be fine, could go down to two pins. Arduino Uno used in this instance.
+-Passive Infrared (PIR) Sensor - bought long ago from Radioshack, soo... Paralax PIR Sensor, Rev B, SKU 555-28027 https://www.parallax.com/product/pir-sensor-with-led-signal/
+    -other PIR sensors shoudl work, but arduino code may need to be changed
+-breadboard
+-button and resistor, if you want fire on demand w/o waving your hand in front of PIR.
+*/
+//
 
-////what about bottom of base? 
-//1. extend spine down back of can and have lip to hold can in place?
-//2. extend spine down and just have nail into pumpkin, no material under can?
-//3. just nail servo holder to side wall of pumpkin? (prob won't work as then it limits placement of contraption to a wall of pumpkin, may want closer to mouth)
 
 //// properties of physical objects
 // hairspray can, specifically tresemme 1.5oz travel size
@@ -75,6 +73,9 @@ servoHorizontalSetback = 8; //measured rough placement, y direction movement
 servoHorizontalShift = 15; //x direction movement
 servoVerticalAdjustment = 5; //rough measurement of how far above top of can should the bottom of the servo housing be, in order to hit the nozzle well
 platformCanBottomMountingHoleDiameter = 3.5; //meh?
+
+modelCutoffWidth = 6; //this is what removes material from side of holder - currently chosen to align closely wiht inner ring of can holder, could likey be less and still hold can in well but was considering stabilty of base
+
 
 difference(){
     union(){
@@ -133,8 +134,6 @@ difference(){
         } //end differnce for servo mounting holes
     }//end union of all
 
-    //this cuts side of the model off so slightly fewer supports are needed when printing
-    modelCutoffWidth = 6;
     translate([canTopOuterDiameter/2+platformCanTopHorizontalPadding-modelCutoffWidth,-(canTopOuterDiameter+platformCanTopHorizontalPadding*2)/2,-(canHeight+platformCanBottomHeight)]){
         cube([modelCutoffWidth,canTopOuterDiameter+platformCanTopHorizontalPadding*2+holderBackplaneDepth,platformCanTopHeight+canHeight+platformCanBottomHeight]);
     }
@@ -144,35 +143,19 @@ difference(){
         cylinder(platformCanBottomHeight, platformCanBottomMountingHoleDiameter/2, platformCanBottomMountingHoleDiameter/2);
     }
     
-        translate([-(servoHorizontalShift+servoDepthBehindEars)+platformCanBottomMountingHoleDiameter,-(canTopOuterDiameter-platformCanBottomMountingHoleDiameter)/2,-(canHeight+platformCanBottomHeight)]){
+    translate([-(servoHorizontalShift+servoDepthBehindEars)+platformCanBottomMountingHoleDiameter,-(canTopOuterDiameter-platformCanBottomMountingHoleDiameter)/2,-(canHeight+platformCanBottomHeight)]){
         cylinder(platformCanBottomHeight, platformCanBottomMountingHoleDiameter/2, platformCanBottomMountingHoleDiameter/2);
     }
         
-        translate([-(servoHorizontalShift+servoDepthBehindEars)+platformCanBottomMountingHoleDiameter,(canTopOuterDiameter-platformCanBottomMountingHoleDiameter)/2,-(canHeight+platformCanBottomHeight)]){
+    translate([-(servoHorizontalShift+servoDepthBehindEars)+platformCanBottomMountingHoleDiameter,(canTopOuterDiameter-platformCanBottomMountingHoleDiameter)/2,-(canHeight+platformCanBottomHeight)]){
         cylinder(platformCanBottomHeight, platformCanBottomMountingHoleDiameter/2, platformCanBottomMountingHoleDiameter/2);
     }
         
-        translate([canTopOuterDiameter/2+platformCanTopHorizontalPadding-modelCutoffWidth-platformCanBottomMountingHoleDiameter,(canTopOuterDiameter-platformCanBottomMountingHoleDiameter)/2,-(canHeight+platformCanBottomHeight)]){
+    translate([canTopOuterDiameter/2+platformCanTopHorizontalPadding-modelCutoffWidth-platformCanBottomMountingHoleDiameter,(canTopOuterDiameter-platformCanBottomMountingHoleDiameter)/2,-(canHeight+platformCanBottomHeight)]){
         cylinder(platformCanBottomHeight, platformCanBottomMountingHoleDiameter/2, platformCanBottomMountingHoleDiameter/2);
     }
 }
     
-
-
-//   //make mounting hole in bottom of plate
-//    translate([canTopOuterDiameter/2+platformCanTopHorizontalPadding-6-platformCanBottomMountingHoleDiameter,0,-(canHeight+platformCanBottomHeight)]){
-//        cylinder(platformCanBottomHeight, platformCanBottomMountingHoleDiameter/2, platformCanBottomMountingHoleDiameter/2);
-//    }
-
-
-
-//        //bottom of holder
-//        translate([(canTopOuterDiameter/2+platformCanTopHorizontalPadding)/2-(servoHorizontalShift+servoDepthBehindEars)/2,0,-canHeight-platformCanBottomHeight/2]){
-//            cube([(servoHorizontalShift+servoDepthBehindEars)+canTopOuterDiameter/2+platformCanTopHorizontalPadding,canTopOuterDiameter+platformCanTopHorizontalPadding*2,platformCanBottomHeight],true);
-//        }
-//
-
-
 
 
 //Module to make shape of can of tresemme hairspray, 1.5oz travel size
