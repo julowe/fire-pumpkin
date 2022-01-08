@@ -2,6 +2,14 @@
 
 Wherein we hook up a motion sensor to a servo which is mounted on a hairspray can, stick it in a spooooky pumpkin, put a tealight in front of it, and make **really** sure not to burn anyone.
 
+## Results
+
+Because fire.
+
+![Fire Breathing Pumpkin](pumpkin-fire1-smaller.png)
+
+Also see [larger version of above image](pumpkin-fire1-small.png), [another example of fire breathing](pumpkin-fire2-small.png), and [a short movie of it](pumpkin-fire-breathing-quick.mov).
+
 ## Current Version - Servo Driven
 
 The root of this repo includes the arduino code to move a servo when triggered by a PIR sensor or a button, an STL file of a model that holds a servo and a can of hairspray, and the SCAD file for that model so you can edit dimensions if needed. Specific BOM is below.
@@ -20,6 +28,16 @@ The 3D printed holder only depends on the dimensions fo the servo and hairspray 
 | PIR Sensor        | Bought long ago from Radioshack, soo... Paralax Passive Infrared (PIR) Sensor, Rev B, SKU 555-28027 | [Parallax](https://www.parallax.com/product/pir-sensor-with-led-signal/) |
 | Breadboard        | or any other means of connecting wires |  |
 | Button & Resistor | if you want fire on demand w/o waving your hand in front of PIR |  |
+
+## Build
+
+SCAD file included if you want to make any changes, but STL shoudl suit most just fine. How to 3d print in general is out of scope of this readme, but model was designed to print with the common plane of the rectangular servo holder 'back' and 'side' of can holder flat on build plate (YZ Plane in openscad view) and with some supports recommended for underside lip of can holder. Image below shows assembled holder, in the mentioned printing orientation.
+
+![3D Printed Holder](holder-can-servo.jpg)
+
+Wiring diagram shows set up of various pieces to work with included ino file/arduino code.
+
+![Wiring Diagram](wire-diagram-servo.png)
 
 
 ## First Version - with Glade Dispenser
