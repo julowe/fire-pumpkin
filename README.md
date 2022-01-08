@@ -2,11 +2,25 @@
 
 Wherein we hook up a motion sensor to a servo which is mounted on a hairspray can, stick it in a spooooky pumpkin, put a tealight in front of it, and make **really** sure not to burn anyone.
 
-## Upcoming Version - Servo Driven
+## Current Version - Servo Driven
 
-I have added the arduino code to drive a servo to depress a nozzle on a can, also a button to actuate the servo/press the nozzle on demand. I hope to soon add some STL files so we can 3d print a holder for a travel size hairspray can, a tealight, and a mount for the servo that depresses the nozzle. Maybe also some relatively water-resistant housings for the motion sensor and arduino with spikes to stab/mount into the pumpkin?
+The root of this repo includes the arduino code to move a servo when triggered by a PIR sensor or a button, an STL file of a model that holds a servo and a can of hairspray, and the SCAD file for that model so you can edit dimensions if needed. Specific BOM is below.
 
-I am using a [Micro Servo from Adafruit](https://www.adafruit.com/product/169) which works well so far in testing. Plenty of torque to depress nozzle on hairspray can.
+The code and model are fairly simple. Code mostly cobbled together from product examples. Holder has the can angled in and friction fit, has 4 holes in the bottom to nail holder into a pumpkin/whatever. I left it up to you to deal with placement of arduino and wiring.
+
+### Bill Of Materials
+
+The 3D printed holder only depends on the dimensions fo the servo and hairspray can. I called out dimensions of both objects in the scad file, so it should be easy enough to change them, but buy the below if you just want to use the included stl file.
+
+| Item              | Description/Comments | Link |
+| ----------------- | -------------------- | ---- |
+| Hairspray         | Tresemme Hairspray can, 1.5oz travel size | [Target](https://www.target.com/p/tresemme-tres-two-extra-hold-hairspray-travel-size-1-5oz/-/A-13294119) |
+| Servo             | Tower Pro SG92R Microservo | [Adafruit](https://www.adafruit.com/product/169) |
+| Arduino           | Arduino Uno used, but only three IO pins are used so almost any version should be fine |  |
+| PIR Sensor        | Bought long ago from Radioshack, soo... Paralax Passive Infrared (PIR) Sensor, Rev B, SKU 555-28027 | [Parallax](https://www.parallax.com/product/pir-sensor-with-led-signal/) |
+| Breadboard        | or any other means of connecting wires |  |
+| Button & Resistor | if you want fire on demand w/o waving your hand in front of PIR |  |
+
 
 ## First Version - with Glade Dispenser
 
