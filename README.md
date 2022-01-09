@@ -14,7 +14,7 @@ Also see [larger version of above image](pumpkin-fire1-small.png), [another exam
 
 The root of this repo includes the arduino code to move a servo when triggered by a PIR sensor or a button, an STL file of a model that holds a servo and a can of hairspray, and the SCAD file for that model so you can edit dimensions if needed. Specific BOM is below.
 
-The code and model are fairly simple. Code mostly cobbled together from product examples. Holder has the can angled in and friction fit, has 4 holes in the bottom to nail holder into a pumpkin/whatever. I left it up to you to deal with placement of arduino and wiring.
+The code and model are fairly simple. Code mostly cobbled together from product examples. Holder has the can angled in and friction fit, has 4 holes in the bottom to nail holder into a pumpkin/whatever. I left it up to you to deal with placement of arduino and wiring. And also left it to you to figure out flame/ignition source and placement. I used a tea light, as I didn't have the time to experiment with electronic sparkers/ignition options. A tea light doesn't work all that well, but I'd rather the flame go out (usual failure mode) and this all fail to ignite, rather than it igniting too much/often... As a starting point, I found the best placement of a tea light to be roughly 1.5" below nozzle, and 3" away from nozzle. 
 
 ### Bill Of Materials
 
@@ -25,13 +25,13 @@ The 3D printed holder only depends on the dimensions fo the servo and hairspray 
 | Hairspray         | Tresemme Hairspray can, 1.5oz travel size | [Target](https://www.target.com/p/tresemme-tres-two-extra-hold-hairspray-travel-size-1-5oz/-/A-13294119) |
 | Servo             | Tower Pro SG92R Microservo | [Adafruit](https://www.adafruit.com/product/169) |
 | Arduino           | Arduino Uno used, but only three IO pins are used so almost any version should be fine |  |
-| PIR Sensor        | Bought long ago from Radioshack, soo... Paralax Passive Infrared (PIR) Sensor, Rev B, SKU 555-28027 | [Parallax](https://www.parallax.com/product/pir-sensor-with-led-signal/) |
+| PIR Sensor        | Bought long ago from Radioshack, soo... Parallax Passive Infrared (PIR) Sensor, Rev B, SKU 555-28027 | [Parallax](https://www.parallax.com/product/pir-sensor-with-led-signal/) |
 | Breadboard        | or any other means of connecting wires |  |
 | Button & Resistor | if you want fire on demand w/o waving your hand in front of PIR |  |
 
 ## Build
 
-SCAD file included if you want to make any changes, but STL shoudl suit most just fine. How to 3d print in general is out of scope of this readme, but model was designed to print with the common plane of the rectangular servo holder 'back' and 'side' of can holder flat on build plate (YZ Plane in openscad view) and with some supports recommended for underside lip of can holder. Image below shows assembled holder, in the mentioned printing orientation.
+SCAD file included if you want to make any changes, but STL should suit most just fine. How to 3d print in general is out of scope of this readme, but model was designed to print with the common plane of the rectangular servo holder 'back' and 'side' of can holder flat on build plate (YZ Plane in openscad view) and with some supports recommended for underside lip of can holder. Image below shows assembled holder, in the mentioned printing orientation.
 
 ![3D Printed Holder](holder-can-servo.jpg)
 
